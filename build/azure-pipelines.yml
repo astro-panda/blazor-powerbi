@@ -1,0 +1,6 @@
+name: Astro Panda Power BI Blazor
+
+trigger:
+  branches:
+    include:
+    - main
