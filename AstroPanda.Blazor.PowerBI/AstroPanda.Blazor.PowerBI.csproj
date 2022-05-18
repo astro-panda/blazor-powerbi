@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
     <PackageReference Include="Microsoft.Identity.Client" Version="4.43.2" />
     <PackageReference Include="Microsoft.PowerBI.Api" Version="4.5.0" />
     <PackageReference Include="Microsoft.PowerBI.JavaScript" Version="2.19.1" />
