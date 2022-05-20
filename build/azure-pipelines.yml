@@ -3,7 +3,7 @@ name: Astro Panda Blazor Power BI
 variables:
 - name: library
   value: Blazor Power BI
-- name: target-project
+- name: targetProject
   value: "**/AstroPanda.Blazor.PowerBI.csproj"
 
 trigger:
@@ -23,7 +23,7 @@ jobs:
     displayName: Restore ${{ variables.library }}
     inputs:
       command: build
-      projects: ${{ variables.target-project }}
+      projects: ${{ variables.targetProject }}
 
   # - task: DotNetCoreCli@2
   #   displayName: Test ${{ variables.library }}
@@ -36,7 +36,7 @@ jobs:
     displayName: Pack ${{ variables.library }}
     inputs:
       command: pack
-      projects: ${{ variables.target-project }}
+      projects: ${{ variables.targetProject }}
       outputDir: $(Build.ArtifactStagingDirectory)
 
   - task:  PublishPipelineArtifact@1
