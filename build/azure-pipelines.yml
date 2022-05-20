@@ -4,7 +4,7 @@ variables:
 - name: library
   value: Blazor Power BI
 - name: target-project
-  value: **/AstroPanda.Blazor.PowerBI.csproj
+  value: "**/AstroPanda.Blazor.PowerBI.csproj"
 
 trigger:
 - main
