@@ -27,6 +27,8 @@ builder.Services.AddServerSideBlazor()
     .AddMicrosoftIdentityConsentHandler();
 builder.Services.AddSingleton<WeatherForecastService>();
 
+builder.Services.AddBlazorPowerBI(builder.Configuration.GetSection("PowerBI"));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

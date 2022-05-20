@@ -21,8 +21,16 @@
     public string MaxWidth { get; set; } = "2000px";
 
     [Parameter]
-    public string WorkspaceId { get; set; } = string.Empty;
+    public Guid WorkspaceId { get; set; }
 
     [Parameter]
-    public string ReportId { get; set; } = string.Empty;
+    public Guid ReportId { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
+        {
+            await _pbiInterop.GenerateReport(powerBIReport, WorkspaceId, ReportId);
+        }
+    }
 }

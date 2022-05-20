@@ -2,47 +2,43 @@
 using Microsoft.JSInterop;
 using Microsoft.PowerBI.Api;
 using Microsoft.PowerBI.Api.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Rest;
 
 namespace AstroPanda.Blazor.PowerBI.Services
 {
     public class PowerBIInterop : IAsyncDisposable
     {
-        private readonly Lazy<Task<IJSObjectReference>> moduleTask;        
-        private readonly Lazy<Task<IJSObjectReference>> embedModuleTask;        
-        private readonly PowerBIClient _powerBi;
+        private readonly Lazy<Task<IJSObjectReference>> _embedModuleTask;
+        private readonly IPowerBIAuthenticationService _authService;
 
-        public PowerBIInterop(IJSRuntime jsRuntime, PowerBIClient powerBI)
+        public PowerBIInterop(IJSRuntime jsRuntime, IPowerBIAuthenticationService authService)
         {
-            moduleTask = new(() => jsRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/powerbi-client/dist/powerbi.js").AsTask());
-            embedModuleTask = new(() => jsRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/blazor-power-bi.js").AsTask());
-            _powerBi = powerBI;
+            _embedModuleTask = new(() => jsRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/AstroPanda.Blazor.PowerBI/blazor-power-bi.js").AsTask());
+            _authService = authService;
         }
 
         public async ValueTask DisposeAsync()
         {
-            if (moduleTask.IsValueCreated)
+            if (_embedModuleTask.IsValueCreated)
             {
-                var module = await moduleTask.Value;
-                await module.DisposeAsync();
-            }
-
-            if (embedModuleTask.IsValueCreated)
-            {
-                var module = await embedModuleTask.Value;
+                var module = await _embedModuleTask.Value;
                 await module.DisposeAsync();
             }
         }
         public async Task GenerateReport(ElementReference reportContainer, Guid workspaceId, Guid reportId)
         {
-            Report report = await _powerBi.Reports.GetReportInGroupAsync(workspaceId, reportId);
+            var tokenCreds = await _authService.GetAuthentication();
 
-            var module = await embedModuleTask.Value;
-            await module.InvokeAsync<object>("embedReport");
+            using PowerBIClient _powerBI = new PowerBIClient(new Uri("https://api.powerbi.com"), tokenCreds);
+
+
+            Report report = await _powerBI.Reports.GetReportInGroupAsync(workspaceId, reportId);
+
+            var tokenRequest = new GenerateTokenRequest(TokenAccessLevel.View, report.DatasetId);            
+            var embedToken = await _powerBI.Reports.GenerateTokenInGroupAsync(workspaceId, reportId, tokenRequest);
+
+            var module = await _embedModuleTask.Value;
+            await module.InvokeAsync<object>("embedReport", reportContainer, reportId, report.EmbedUrl, embedToken.Token);
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿@page "/"
+@using AstroPanda.Blazor.PowerBI.Options
+@using Microsoft.Extensions.Options
 
 <PageTitle>Index</PageTitle>
 
@@ -6,4 +8,12 @@
 
 Welcome to your new app.
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+
+<EmbeddedReport WorkspaceId="_reportRef.WorkspaceId" ReportId="_reportRef.ReportId" />
+
+@code {
+    [Inject]
+    private IOptionsMonitor<PowerBIOptions> _options { get; set; }
+
+    private ReportReference _reportRef => _options.CurrentValue.Reports["inventory"];
+}

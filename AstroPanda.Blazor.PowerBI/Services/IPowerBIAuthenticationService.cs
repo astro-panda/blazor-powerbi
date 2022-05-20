@@ -1,4 +1,5 @@
 ﻿using Microsoft.Identity.Client;
+using Microsoft.Rest;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace AstroPanda.Blazor.PowerBI.Services
 {
     public interface IPowerBIAuthenticationService
     {
-        public Task<AuthenticationResult> GetAuthentication();        
+        public Task<TokenCredentials> GetAuthentication();        
     }
 }

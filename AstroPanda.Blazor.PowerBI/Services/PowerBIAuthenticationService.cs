@@ -1,6 +1,7 @@
 ﻿using AstroPanda.Blazor.PowerBI.Options;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Client;
+using Microsoft.Rest;
 
 namespace AstroPanda.Blazor.PowerBI.Services
 {
@@ -13,14 +14,16 @@ namespace AstroPanda.Blazor.PowerBI.Services
             _options = optionsMonitor.CurrentValue;
         }
 
-        public async Task<AuthenticationResult> GetAuthentication()
+        public async Task<TokenCredentials> GetAuthentication()
         {
             IConfidentialClientApplication daemonClient = ConfidentialClientApplicationBuilder.Create(_options.ClientId)
                                                                                               .WithAuthority(_options.Authority)
                                                                                               .WithClientSecret(_options.ClientSecret)
                                                                                               .Build();
 
-            return await daemonClient.AcquireTokenForClient(new[] { PowerBIOptions.MSGraphScope }).ExecuteAsync();
+            AuthenticationResult authResult = await daemonClient.AcquireTokenForClient(new[] { PowerBIOptions.MSGraphScope }).ExecuteAsync();
+
+            return new TokenCredentials(authResult.AccessToken, authResult.TokenType);
         }
     }
 }
