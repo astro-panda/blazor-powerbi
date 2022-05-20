@@ -1,0 +1,36 @@
+﻿@using AstroPanda.Blazor.PowerBI.Services
+@using Microsoft.JSInterop
+
+<div @ref="powerBIReport" style="@($"width:{Width};height:{Height};max-width:{MaxWidth}")"></div>
+
+@code  {
+
+    [Inject]
+
+    private PowerBIInterop _pbiInterop { get; set; }
+
+    private ElementReference powerBIReport { get; set; }
+
+    [Parameter]
+    public string Width { get; set; } = "100%";
+
+    [Parameter]
+    public string Height { get; set; } = "600px";
+
+    [Parameter]
+    public string MaxWidth { get; set; } = "2000px";
+
+    [Parameter]
+    public Guid WorkspaceId { get; set; }
+
+    [Parameter]
+    public Guid ReportId { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
+        {
+            await _pbiInterop.GenerateReport(powerBIReport, WorkspaceId, ReportId);
+        }
+    }
+}
