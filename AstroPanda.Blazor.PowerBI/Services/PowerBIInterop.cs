@@ -37,8 +37,6 @@ namespace AstroPanda.Blazor.PowerBI.Services
                 await module.DisposeAsync();
             }
         }
-
-
         public async Task GenerateReport(ElementReference reportContainer, Guid workspaceId, Guid reportId)
         {
             Report report = await _powerBi.Reports.GetReportInGroupAsync(workspaceId, reportId);

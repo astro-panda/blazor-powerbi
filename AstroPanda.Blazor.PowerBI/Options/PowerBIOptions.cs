@@ -18,5 +18,7 @@ namespace AstroPanda.Blazor.PowerBI.Options
         public string ClientSecret { get; set; } = string.Empty;
 
         public string Authority => $"https://login.microsoftonline.com/{TenantId}/v2.0";
+
+        public Dictionary<string, ReportReference> Reports { get; set; } = new();
     }
 }
