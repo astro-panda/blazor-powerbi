@@ -1,6 +1,46 @@
-name: Astro Panda Power BI Blazor
+name: Astro Panda Blazor Power BI
+
+variables:
+- name: library
+  value: Blazor Power BI
+- name: target-project
+  value: **/AstroPanda.Blazor.PowerBI.csproj
 
 trigger:
+- main
+
+pr:
   branches:
     include:
-    - main
+    - '*'
+
+jobs:
+- job: Build
+  pool:
+    vmImage: windows-latest
+  steps:
+  - task: DotNetCoreCli@2
+    displayName: Restore ${{ variables.library }}
+    inputs:
+      command: build
+      projects: ${{ variables.target-project }}
+
+  # - task: DotNetCoreCli@2
+  #   displayName: Test ${{ variables.library }}
+  #   inputs:
+  #     command: test
+  #     projects: ${{ variables.target-project }}
+
+  - task: DotNetCoreCli@2
+    condition: and(eq('${{ variables['Build.SourceBranchName']}}', 'main'), ne('${{ variables['Build.Reason']}}', 'PullRequest'))
+    displayName: Pack ${{ variables.library }}
+    inputs:
+      command: pack
+      projects: ${{ variables.target-project }}
+      outputDir: $(Build.ArtifactStagingDirectory)
+
+  - task:  PublishPipelineArtifact@1
+    condition: and(eq('${{ variables['Build.SourceBranchName']}}', 'main'), ne('${{ variables['Build.Reason']}}', 'PullRequest'))
+    displayName: Publish ${{ variables.library }}
+    inputs:
+      targetPath: $(Build.ArtifactStagingDirectory)
