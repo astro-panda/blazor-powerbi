@@ -2,7 +2,6 @@
 using Microsoft.JSInterop;
 using Microsoft.PowerBI.Api;
 using Microsoft.PowerBI.Api.Models;
-using Microsoft.Rest;
 
 namespace AstroPanda.Blazor.PowerBI.Services
 {
@@ -25,13 +24,12 @@ namespace AstroPanda.Blazor.PowerBI.Services
                 await module.DisposeAsync();
             }
         }
+
         public async Task GenerateReport(ElementReference reportContainer, Guid workspaceId, Guid reportId)
         {
             var tokenCreds = await _authService.GetAuthentication();
 
             using PowerBIClient _powerBI = new PowerBIClient(new Uri("https://api.powerbi.com"), tokenCreds);
-
-
             Report report = await _powerBI.Reports.GetReportInGroupAsync(workspaceId, reportId);
 
             var tokenRequest = new GenerateTokenRequest(TokenAccessLevel.View, report.DatasetId);            

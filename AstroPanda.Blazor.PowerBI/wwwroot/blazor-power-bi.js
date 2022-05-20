@@ -27,7 +27,7 @@
 
     $(container).height(newHeight);
 
-    $(window).resize(() => {
+    //$(window).resize(() => {
 
-    });
+    //});
 }
