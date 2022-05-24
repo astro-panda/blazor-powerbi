@@ -20,17 +20,44 @@
     [Parameter]
     public string MaxWidth { get; set; } = "2000px";
 
-    [Parameter]
-    public Guid WorkspaceId { get; set; }
+    private Guid _workspaceId;
 
     [Parameter]
-    public Guid ReportId { get; set; }
+    public Guid WorkspaceId 
+    {
+        get => _workspaceId;
+        set
+        {
+            if (_workspaceId != value)
+                WorkspaceIdChanged.InvokeAsync(value);
+
+            _workspaceId = value;
+        }
+    }
+
+    [Parameter]
+    public EventCallback<Guid> WorkspaceIdChanged { get; set; }
+
+    private Guid _reportId;
+
+    [Parameter]
+    public Guid ReportId 
+    {
+        get => _reportId;
+        set
+        {
+            if (_reportId != value)
+                ReportIdChanged.InvokeAsync(value);
+
+            _reportId = value;
+        }
+    }
+
+    [Parameter]
+    public EventCallback<Guid> ReportIdChanged { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if(firstRender)
-        {
-            await _pbiInterop.GenerateReport(powerBIReport, WorkspaceId, ReportId);
-        }
+        await _pbiInterop.GenerateReport(powerBIReport, WorkspaceId, ReportId);
     }
 }
