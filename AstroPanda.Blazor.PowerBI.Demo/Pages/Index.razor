@@ -1,19 +1,15 @@
-﻿@page "/"
+﻿@page "/{ReportKey}"
 @using AstroPanda.Blazor.PowerBI.Options
 @using Microsoft.Extensions.Options
 
-<PageTitle>Index</PageTitle>
-
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
-
-
-<EmbeddedReport WorkspaceId="_reportRef.WorkspaceId" ReportId="_reportRef.ReportId" />
+<EmbeddedReport @bind-WorkspaceId="_reportRef.WorkspaceId" @bind-ReportId="_reportRef.ReportId" />
 
 @code {
     [Inject]
     private IOptionsMonitor<PowerBIOptions> _options { get; set; }
 
-    private ReportReference _reportRef => _options.CurrentValue.Reports["inventory"];
+    [Parameter]
+    public string ReportKey { get; set; }
+
+    private ReportReference _reportRef => _options.CurrentValue.Reports[ReportKey ?? "inventory"];
 }
